@@ -1,24 +1,28 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net"
 	"net/http"
 	"time"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/tmolyakov/go-api-xmp/internal/handlers/user"
 )
 
-func IndexHandler(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	name := params.ByName("name")
-	w.Write([]byte(fmt.Sprintf("Hello %s", name)))
+func main() {
+	log.Println("create router")
+	router := httprouter.New()
+
+	log.Println("register user handler")
+	handler := user.NewHandler()
+	handler.Register(router)
+
+	start(router)
 }
 
-func main() {
-	router := httprouter.New()
-	router.GET("/:name", IndexHandler)
-
+func start(router *httprouter.Router) {
+	log.Println("starting application...")
 	listener, err := net.Listen("tcp", ":1234")
 
 	if err != nil {
@@ -30,6 +34,8 @@ func main() {
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
+
+	log.Println("server is listening at 0.0.0.0:1234")
 
 	log.Fatalln(server.Serve(listener))
 }
