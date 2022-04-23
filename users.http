@@ -1,0 +1,24 @@
+GET http://localhost:1234/users/12
+Content-Type: application/json
+
+###
+
+PUT http://localhost:1234/users/12
+Content-Type: application/json
+
+###
+
+POST http://localhost:1234/users/12
+Content-Type: application/json
+
+###
+
+PATCH http://localhost:1234/users/12
+Content-Type: application/json
+
+###
+
+DELETE http://localhost:1234/users/12
+Content-Type: application/json
+
+###
