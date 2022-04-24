@@ -8,10 +8,13 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/tmolyakov/go-api-xmp/internal/handlers/user"
+	"github.com/tmolyakov/go-api-xmp/pkg/logging"
 )
 
 func main() {
-	log.Println("create router")
+	logger := logging.GetLogger()
+	logger.Info("create router")
+	// log.Println("create router")
 	router := httprouter.New()
 
 	log.Println("register user handler")
