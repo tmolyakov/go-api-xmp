@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net"
 	"net/http"
 	"time"
@@ -14,18 +13,18 @@ import (
 func main() {
 	logger := logging.GetLogger()
 	logger.Info("create router")
-	// log.Println("create router")
 	router := httprouter.New()
 
-	log.Println("register user handler")
-	handler := user.NewHandler()
+	logger.Info("register user handler")
+	handler := user.NewHandler(logger)
 	handler.Register(router)
 
 	start(router)
 }
 
 func start(router *httprouter.Router) {
-	log.Println("starting application...")
+	logger := logging.GetLogger()
+	logger.Info("starting application...")
 	listener, err := net.Listen("tcp", ":1234")
 
 	if err != nil {
@@ -38,7 +37,7 @@ func start(router *httprouter.Router) {
 		ReadTimeout:  15 * time.Second,
 	}
 
-	log.Println("server is listening at 0.0.0.0:1234")
+	logger.Info("server is listening at 0.0.0.0:1234")
 
-	log.Fatalln(server.Serve(listener))
+	logger.Fatal(server.Serve(listener))
 }

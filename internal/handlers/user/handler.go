@@ -5,6 +5,7 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/tmolyakov/go-api-xmp/internal/handlers"
+	"github.com/tmolyakov/go-api-xmp/pkg/logging"
 )
 
 var _ handlers.Handler = &handler{}
@@ -15,10 +16,13 @@ const (
 )
 
 type handler struct {
+	logger logging.Logger
 }
 
-func NewHandler() handlers.Handler {
-	return &handler{}
+func NewHandler(logger logging.Logger) handlers.Handler {
+	return &handler{
+		logger: logger,
+	}
 }
 
 func (h *handler) Register(router *httprouter.Router) {
