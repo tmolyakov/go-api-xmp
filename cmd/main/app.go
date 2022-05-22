@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"net/http"
@@ -12,6 +13,8 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/tmolyakov/go-api-xmp/internal/config"
 	"github.com/tmolyakov/go-api-xmp/internal/handlers/user"
+	"github.com/tmolyakov/go-api-xmp/internal/handlers/user/db"
+	"github.com/tmolyakov/go-api-xmp/pkg/client/mongodb"
 	"github.com/tmolyakov/go-api-xmp/pkg/logging"
 )
 
@@ -21,6 +24,33 @@ func main() {
 	router := httprouter.New()
 
 	cfg := config.GetConfig()
+
+	cfgMongo := cfg.MongoDB
+	mongoDBClient, err := mongodb.NewClient(
+		context.Background(),
+		cfgMongo.Host,
+		cfgMongo.Port,
+		cfgMongo.Username,
+		cfgMongo.Password,
+		cfgMongo.Database,
+		cfgMongo.AuthDB,
+	)
+	if err != nil {
+		panic(err)
+	}
+	storage := db.NewStorage(mongoDBClient, cfg.MongoDB.Collection, logger)
+
+	user1 := user.User{
+		ID:           "",
+		Email:        "test@test.com",
+		Username:     "testUser",
+		PasswordHash: "asdfas42345234",
+	}
+	user1ID, err := storage.Create(context.Background(), user1)
+	if err != nil {
+		panic(err)
+	}
+	logger.Info(user1ID)
 
 	logger.Info("register user handler")
 	handler := user.NewHandler(logger)

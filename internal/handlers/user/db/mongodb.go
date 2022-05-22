@@ -98,7 +98,7 @@ func (d db) Update(ctx context.Context, user user.User) error {
 func (d db) Delete(ctx context.Context, id string) error {
 	ObjectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return fmt.Errorf("failed to convert user ID to ObjectID. ID=%s", user.ID)
+		return fmt.Errorf("failed to convert user ID to ObjectID. ID=%s", id)
 	}
 
 	filter := bson.M{"_id": ObjectId}
